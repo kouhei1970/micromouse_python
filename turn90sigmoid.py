@@ -14,11 +14,11 @@ def main():
     pygame.display.set_caption("Micromouse Simulation")    # タイトルを作成
     FPS = 30
     #---------------  1.画像を読み込む  --------------------------
-    img_width = 64
-    img_height = 46
+    robot_width = 80
+    robot_length = 100
 
     #一部の色を透明にする
-    zoom =3.0
+    zoom =2
     img0 = pygame.image.load("micromouse.png").convert()
     #print(img2.get_size())
     #colorkey = (255, 255, 255)#img2.get_at((207,0))
@@ -126,7 +126,7 @@ def main():
         if time>render_time:
             render_time += render_step
             screen.fill((0,0,0))  #画面を黒で塗りつぶす
-            img = pygame.transform.scale(img0, (img_width*zoom, img_height*zoom)) 
+            img = pygame.transform.scale(img0, (robot_length*zoom, robot_width*zoom)) 
             rotated_image = pygame.transform.rotate(img, rotation)
             new_rect = rotated_image.get_rect(center=img.get_rect(center=(160, 120)).center)
             screen.blit(rotated_image, new_rect)

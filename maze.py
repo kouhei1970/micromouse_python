@@ -268,6 +268,10 @@ class Maze():
         clock = pygame.time.Clock()
         screen = pygame.display.set_mode((640, 640))    # 画面を作成
         pygame.display.set_caption("Micromouse Simulation")    # タイトルを作成
+        img0 = pygame.image.load("micromouse.png").convert()
+        robot_width = 80
+        robot_length = 100
+
         FPS = 30
         w_width = 640
         w_height =640
@@ -279,8 +283,11 @@ class Maze():
         white= (255,255,255)
         black = (0,0,0)
         #Rendering
-        mx=0
-        my=0
+        rx=0
+        ry=0
+        mx = 0
+        my = 0
+        mangle = 0
         while True:
             screen.fill((0,0,0)) # 背景を黒で塗りつぶす
             for i in range(33*33):
@@ -295,10 +302,17 @@ class Maze():
                     #print(vertex)
                     pygame.draw.polygon(screen, (200,0,0),vertex)
                     #screen.fill((200,0,0), (x, y, width, height))
+            
+            #Draw robot
+            zoom=0.3
+            img = pygame.transform.scale(img0, (robot_length/5, robot_width/5)) 
+            rotated_image = pygame.transform.rotate(img, mangle)
+            new_rect = rotated_image.get_rect(center=((90+mx*180)/5 + (w_width - maze_width)/2,640-((90+my*180)/5+(w_height - maze_height)/2)))
+            screen.blit(rotated_image, new_rect)
 
             #Ray Draw
             for angle in range(0,360,5):
-                pos = np.array([[90+180*mx],[90+180*my]])
+                pos = np.array([[90+180*rx],[90+180*ry]])
                 rayvect = np.array([[np.cos(angle*np.pi/180)],[np.sin(angle*np.pi/180)]])
                 rayvect = rayvect/np.linalg.norm(rayvect)
                 min_range = 10000.0
@@ -323,8 +337,13 @@ class Maze():
                 if event.type == QUIT:  # 終了イベント
                     pygame.quit()  #pygameのウィンドウを閉じる
                     sys.exit() #システム終了
-            mx = int(np.random.random(1)*16)
-            my = int(np.random.random(1)*16)
+            rx = int(np.random.random(1)*16)
+            ry = int(np.random.random(1)*16)
+            #mx = int(np.random.random(1)*16)
+            #my = int(np.random.random(1)*16)
+            mangle += 15
+            if mangle>=360:
+                mangle = 0
             '''
             my += 1
             if my==16:
