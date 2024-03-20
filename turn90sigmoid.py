@@ -11,7 +11,7 @@ def main():
     pygame.init()    # Pygameを初期化
     clock = pygame.time.Clock()
     screen = pygame.display.set_mode((320, 240))    # 画面を作成
-    pygame.display.set_caption("Micromouse Simulation")    # タイトルを作成
+    pygame.display.set_caption("Micromouse Simulator")    # タイトルを作成
     FPS = 30
     #---------------  1.画像を読み込む  --------------------------
     robot_width = 80
