@@ -151,10 +151,6 @@ def main():
                 pygame.quit()  #pygameのウィンドウを閉じる
                 sys.exit() #システム終了
     #End of Loop
-    #pygame.quit()  #pygameのウィンドウを閉じる
-    #print(ref_psi*180/np.pi)
-    
-    #pygame.quit()  #pygameのウィンドウを閉じる
     draw_graph(Time, Time2, time_max, State, State_input, State_ref)
 
 stop = False
@@ -165,29 +161,19 @@ def on_close(event):
 
 def draw_graph(Time, Time2, time_max, State, State_input, State_ref):
     pygame_flag =True
-    '''
-    plt.figure("State")
+    
+    plt.ion()
+    fig1 = plt.figure("State")
+    fig1.canvas.mpl_connect('close_event', on_close)
     min_y=[-100,-10,-1,-1,-5,-2.5,0,0]
     max_y=[10,100, 1, 1, 5, 1, 0.18, 0.18]
     for i in range(8):
-        plt.subplot(8,1,i+1)
-        plt.plot(Time, State[i], label="data{}".format(i))
+        ax = fig1.add_subplot(8,1,i+1)
+        ax.plot(Time, State[i], label="data{}".format(i))
         #plt.ylim(min_y[i], max_y[i])
-        plt.legend()
-        plt.grid()
+        ax.legend()
+        ax.grid()
 
-    '''
-    '''
-    plt.plot(State[6], State[7])
-    plt.xlim(0, 1.8)
-    plt.ylim(0, 1.8)
-    plt.xticks(np.arange(0, 1.81, 0.18))
-    plt.yticks(np.arange(0, 1.81, 0.18))       
-    plt.grid()
-    plt.show()
-    '''
-
-    plt.ion()
     fig = plt.figure("Control result")
     fig.canvas.mpl_connect('close_event', on_close)
     ax1 = fig.add_subplot(4,1,1)
@@ -218,7 +204,9 @@ def draw_graph(Time, Time2, time_max, State, State_input, State_ref):
     while True:
         if stop == True:
             break
-        fig.canvas.flush_events()        
+        fig1.canvas.flush_events()
+        fig.canvas.flush_events()
+
         if pygame_flag == True:
             #pygame.display.update() #描画処理を実行
             for event in pygame.event.get():
