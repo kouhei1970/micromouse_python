@@ -17,7 +17,7 @@ class Micromouse():
         self.tier_r       = 0.012
         self.tier_mass    = 0.005
         self.Jmot         = 0.5 * self.tier_mass * self.tier_r**2
-        self.mu           = 0.03
+        #self.mu           = 0.03
         self.Ct           = 1.0
         self.Ctr          = self.Ct
         self.Ctl          = self.Ct
