@@ -154,6 +154,8 @@ def main():
     #pygame.quit()  #pygameのウィンドウを閉じる
     #print(ref_psi*180/np.pi)
     
+    #pygame.quit()  #pygameのウィンドウを閉じる
+
     plt.figure("State")
     min_y=[-100,-10,-1,-1,-5,-2.5,0,0]
     max_y=[10,100, 1, 1, 5, 1, 0.18, 0.18]
@@ -205,6 +207,7 @@ def main():
 
     plt.grid()
     plt.show()
+
 
 if __name__ == "__main__":
     main()

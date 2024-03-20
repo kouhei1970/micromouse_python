@@ -336,7 +336,8 @@ class Maze():
             for event in pygame.event.get():
                 if event.type == QUIT:  # 終了イベント
                     pygame.quit()  #pygameのウィンドウを閉じる
-                    sys.exit() #システム終了
+                    #sys.exit() #システム終了
+                    return
             rx = int(np.random.random(1)*16)
             ry = int(np.random.random(1)*16)
             #mx = int(np.random.random(1)*16)
@@ -353,7 +354,7 @@ class Maze():
                     mx = 0
             '''
         #End of Loop
-        pygame.quit()  #pygameのウィンドウを閉じる
+        #pygame.quit()  #pygameのウィンドウを閉じる
         #print(ref_psi*180/np.pi)
 
 def main():
