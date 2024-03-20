@@ -189,13 +189,13 @@ def draw_graph(Time, Time2, time_max, State, State_input, State_ref):
 
     plt.ion()
     fig = plt.figure("Control result")
-    #fig.canvas.mpl_connect('close_event', on_close)
+    fig.canvas.mpl_connect('close_event', on_close)
     ax1 = fig.add_subplot(4,1,1)
     #plt.subplot(4,1,1)
     #plt.plot(Time, State[0])
     ax1.plot(Time2, State_input[0])
     ax1.grid()
-    bg1 = fig.canvas.copy_from_bbox(ax1.bbox)
+    #bg1 = fig.canvas.copy_from_bbox(ax1.bbox)
     ax1.set_xlim(0, time_max)
     ax1.set_ylabel("Input(R)[V]")
     ax2 = fig.add_subplot(4,1,2)
@@ -228,16 +228,14 @@ def draw_graph(Time, Time2, time_max, State, State_input, State_ref):
         #fig.canvas.blit(ax1.bbox)
         fig.canvas.flush_events()
         #pygame.display.update() #描画処理を実行
-        '''
+        
         if pygame_flag == True:
             pygame.display.update() #描画処理を実行
             for event in pygame.event.get():
                 if event.type == QUIT:  # 終了イベント
                     pygame.quit()  #pygameのウィンドウを閉じる
                     pygame_flag = False
-                    #sys.exit() #システム終了
-        '''
-
-
+                    sys.exit() #システム終了
+        
 if __name__ == "__main__":
     main()
