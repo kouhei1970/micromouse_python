@@ -2,77 +2,53 @@ from  micromouse import Micromouse
 from maze import Maze
 import matplotlib.pyplot as plt
 import numpy as np
-#from random import gauss
-#from pygame.locals import *
-#import pygame
-#import sys
+from random import gauss
+from pygame.locals import *
+import pygame
+import sys
+
 
 def main():
-    maze = Maze(2)
-    maze.draw_map()
-    x = np.linspace(0,2*np.pi)
-    y = np.sin(x)
-    plt.plot(x ,y)
-    plt.show()
-    
-def pause_plot():
-    fig, ax = plt.subplots(1, 1)
-    x = np.arange(-np.pi, np.pi, 0.1)
-    y = np.sin(x)
-    # 初期化的に一度plotしなければならない
-    # そのときplotしたオブジェクトを受け取る受け取る必要がある．
-    # listが返ってくるので，注意
-    lines, = ax.plot(x, y)
+    pygame.init()    # Pygameを初期化
+    clock = pygame.time.Clock()
+    screen = pygame.display.set_mode((640, 640))    # 画面を作成
+    pygame.display.set_caption("Micromouse Simulation")    # タイトルを作成
+    FPS = 24
 
-    # ここから無限にplotする
+    mouse = Micromouse()
+    maze = Maze(0)
+    mouse.ground_noise_on()
+
     while True:
-        # plotデータの更新
-        #x += 0.1
-        y = np.sin(x)
+        time =0.0
+        mouse.time = time
+        drawtime = 0.0
+        state=[0,0,0,0,0,np.pi/2,0.09,0.09]
+        mouse.state = state
+        ur = 0.0
+        ul = 0.0
 
-        # 描画データを更新するときにplot関数を使うと
-        # lineオブジェクトが都度増えてしまうので，注意．
-        #
-        # 一番楽なのは上記で受け取ったlinesに対して
-        # set_data()メソッドで描画データを更新する方法．
-        lines.set_data(x, y)
+        while time<3.5 and 0.04<state[6]<0.14:
+            if  state[7]<(180*15-100)/1000:
+                ur = 2.0
+                ul = 2.0
+            else:
+                ur = 0.0
+                ul = 0.0
+            time, state= mouse.step(time, ur, ul)
+            #print(time, state[6], state[7], ur, ul)
 
-        # set_data()を使うと軸とかは自動設定されないっぽいので，
-        # 今回の例だとあっという間にsinカーブが描画範囲からいなくなる．
-        # そのためx軸の範囲は適宜修正してやる必要がある．
-        ax.set_xlim((x.min(), x.max()))
+            if time >= drawtime:
+                drawtime += 1/FPS
+                maze.draw_map(screen)
+                mouse.draw_robot(screen)
+                pygame.display.update() #描画処理を実行
 
-        # 一番のポイント
-        # - plt.show() ブロッキングされてリアルタイムに描写できない
-        # - plt.ion() + plt.draw() グラフウインドウが固まってプログラムが止まるから使えない
-        # ----> plt.pause(interval) これを使う!!! 引数はsleep時間
-        plt.pause(.01)
-
-stop = False
-
-def on_close(event):
-    global stop
-    stop = True
-    pass  # ここで終了イベントを受け取って渡す？
-
-
-def main2():
-    plt.ion()
-    fig = plt.figure()
-    fig.canvas.mpl_connect('close_event', on_close)
-    ax = fig.add_subplot()
-    bg = fig.canvas.copy_from_bbox(ax.bbox)
-    line, = ax.plot(np.linspace(0, 99, 100), np.random.rand(100))
-    ax.set_ylim(0.0, 1.0)
-    while True:
-        if stop == True:
-            break
-        #line.set_ydata(np.random.rand(100))
-        #fig.canvas.restore_region(bg)
-        fig.canvas.blit(ax.bbox)
-        fig.canvas.flush_events()
-
-
+            for event in pygame.event.get():
+                if event.type == QUIT:  # 終了イベント
+                    pygame.quit()  #pygameのウィンドウを閉じる
+                    #sys.exit() #システム終了
+                    return
 
 if __name__ == "__main__":
-    main2() 
+    main() 

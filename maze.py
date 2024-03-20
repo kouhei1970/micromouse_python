@@ -67,6 +67,11 @@ class Colmun():
 class Maze():
     #self.map=Mapdata()
     def __init__(self, n):
+        self.maze_width = (180*16)/5
+        self.maze_height = (180*16)/5
+        self.window_width = 640
+        self.window_height =640
+
         self.read_map(n)
         self.map = []
         self.make_map()
@@ -114,8 +119,8 @@ class Maze():
                 #  0   1   2   3   4   5   6   7   8   9  10  11  12  13  14  15
             ]
         elif x == 1:
-            N = 3
-            M = 3 
+            N = 16
+            M = 16
             self.smap=[
                 "+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+---+",#    0
                 "|   |                                                           |",#15  1
@@ -263,7 +268,23 @@ class Maze():
         flag = True
         return t, p, flag
 
-    def draw_map(self):
+    def draw_map(self, screen):
+            screen.fill((0,0,0)) # 背景を黒で塗りつぶす
+            for i in range(33*33):
+                map_obj = self.map[i]
+                if map_obj !=[]:
+                    vertex = map_obj.vertex
+                    vertex = vertex/5
+                    vertex[0] = vertex[0] + (self.window_width - self.maze_width)/2
+                    vertex[1] = 640 - vertex[1] - (self.window_height - self.maze_height)/2
+                    vertex = vertex.T
+                    vertex = vertex.tolist()
+                    #print(vertex)
+                    pygame.draw.polygon(screen, (200,0,0),vertex)
+                    #screen.fill((200,0,0), (x, y, width, height))
+
+
+    def demo(self):
         pygame.init()    # Pygameを初期化
         clock = pygame.time.Clock()
         screen = pygame.display.set_mode((640, 640))    # 画面を作成
@@ -273,10 +294,6 @@ class Maze():
         robot_length = 100
 
         FPS = 30
-        w_width = 640
-        w_height =640
-        maze_width = (180*16)/5
-        maze_height = (180*16)/5
         running = True
         time = 0.0
         render_step = 1/FPS
@@ -289,25 +306,16 @@ class Maze():
         my = 0
         mangle = 0
         while True:
-            screen.fill((0,0,0)) # 背景を黒で塗りつぶす
-            for i in range(33*33):
-                map_obj = self.map[i]
-                if map_obj !=[]:
-                    vertex = map_obj.vertex
-                    vertex = vertex/5
-                    vertex[0] = vertex[0] + (w_width - maze_width)/2
-                    vertex[1] = 640 - vertex[1] - (w_height - maze_height)/2
-                    vertex = vertex.T
-                    vertex = vertex.tolist()
-                    #print(vertex)
-                    pygame.draw.polygon(screen, (200,0,0),vertex)
-                    #screen.fill((200,0,0), (x, y, width, height))
+            self.draw_map(screen)
             
             #Draw robot
             zoom=0.3
             img = pygame.transform.scale(img0, (robot_length/5, robot_width/5)) 
             rotated_image = pygame.transform.rotate(img, mangle)
-            new_rect = rotated_image.get_rect(center=((90+mx*180)/5 + (w_width - maze_width)/2,640-((90+my*180)/5+(w_height - maze_height)/2)))
+            new_rect = rotated_image.get_rect(\
+                center=(\
+                    (90+mx*180)/5 + (self.window_width - self.maze_width)/2,\
+                    640-((90+my*180)/5+(self.window_height - self.maze_height)/2)))
             screen.blit(rotated_image, new_rect)
 
             #Ray Draw
@@ -324,11 +332,11 @@ class Maze():
                             min_range = t
                             min_p = p
                 pos = pos/5
-                pos[0] = pos[0] + (w_width - maze_width)/2
-                pos[1] = 640 - pos[1] - (w_height - maze_height)/2
+                pos[0] = pos[0] + (self.window_width - self.maze_width)/2
+                pos[1] = 640 - pos[1] - (self.window_height - self.maze_height)/2
                 min_p = min_p/5
-                min_p[0] = min_p[0] + (w_width - maze_width)/2
-                min_p[1] = 640 - min_p[1] - (w_height - maze_height)/2
+                min_p[0] = min_p[0] + (self.window_width - self.maze_width)/2
+                min_p[1] = 640 - min_p[1] - (self.window_height - self.maze_height)/2
                 pygame.draw.line(screen, (255, 255, 0), pos[:,0], min_p, 2)
             pygame.display.update() #描画処理を実行
             #clock.tick(FPS)
@@ -359,7 +367,7 @@ class Maze():
 
 def main():
     maze = Maze(2)
-    maze.draw_map()
+    maze.demo()
 
 if __name__ == "__main__":
     main()

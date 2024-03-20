@@ -31,6 +31,7 @@ def main():
 
 
     state=[0,0,0,0,0,0.0,0.09,0.09]
+    mouse.state = state
     mouse.ground_noise_on()
     time = 0.0
     Time=[]
@@ -119,7 +120,7 @@ def main():
  
             control_counter +=1
 
-        time, state = mouse.step(time, u_r, u_l, state)
+        time, state = mouse.step(time, u_r, u_l)
 
         #Rendering
         rotation = psi * 180/np.pi
