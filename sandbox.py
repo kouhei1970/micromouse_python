@@ -29,7 +29,7 @@ def main():
         ul = 0.0
 
         while time<3.5 and 0.04<state[6]<0.14:
-            if  state[7]<(180*15-100)/1000:
+            if  state[7]<(180*14-50)/1000:
                 ur = 2.0
                 ul = 2.0
             else:

@@ -26,7 +26,7 @@ class Micromouse():
         self.Cc           = 1.0
         self.motor_R      = 1.07
         self.motor_K      = 1.98e-3
-        self.gear         = 10.0
+        self.gear         = 8.0
         self.tread = self.robot_width - self.tier_width
         self.robot_inertia =  self.robot_mass*(self.robot_width**2 + self.robot_length**2)/3.0
         self.time = 0.0
