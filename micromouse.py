@@ -235,7 +235,7 @@ class Micromouse():
 
     def version(self):
         print("-----------------------")
-        print(" Micromouse Simulation ")
+        print(" Micromouse Simulator ")
         print(" Version 1.0")
         print("-----------------------")
               
