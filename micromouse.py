@@ -50,7 +50,7 @@ class Micromouse():
         k2=h*func(t+0.5*h, y+0.5*k1, *x)
         k3=h*func(t+0.5*h, y+0.5*k2, *x) 
         k4=h*func(t+h, y+k3, *x)
-        y=y+(k1 + 2*k2 + 2*k3 + k4)/6
+        y=y+(k1 + 2.0*k2 + 2.0*k3 + k4)/6.0
         return y
 
     '''
