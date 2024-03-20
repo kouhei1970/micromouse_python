@@ -191,46 +191,36 @@ def draw_graph(Time, Time2, time_max, State, State_input, State_ref):
     fig = plt.figure("Control result")
     fig.canvas.mpl_connect('close_event', on_close)
     ax1 = fig.add_subplot(4,1,1)
-    #plt.subplot(4,1,1)
-    #plt.plot(Time, State[0])
+    ax2 = fig.add_subplot(4,1,2)
+    ax3 = fig.add_subplot(4,1,3)
+    ax4 = fig.add_subplot(4,1,4)
     ax1.plot(Time2, State_input[0])
     ax1.grid()
-    #bg1 = fig.canvas.copy_from_bbox(ax1.bbox)
     ax1.set_xlim(0, time_max)
     ax1.set_ylabel("Input(R)[V]")
-    ax2 = fig.add_subplot(4,1,2)
-    #plt.plot(Time, State[1])
     ax2.plot(Time2, State_input[1])
     ax2.set_ylabel("Input(L)[V]")
     ax2.grid()
     ax2.set_xlim(0, time_max)
-    bg2 = fig.canvas.copy_from_bbox(ax2.bbox)
-    ax3 = fig.add_subplot(4,1,3)
     ax3.plot(Time, np.array(State[5])*180/np.pi)
     ax3.plot(Time2, np.array(State_ref[0])*180/np.pi)
     ax3.set_yticks((0, 45, 90))
     ax3.set_xlim(0, time_max)
     ax3.set_ylabel("Angle[deg]")
     ax3.grid()
-    ax4 = fig.add_subplot(4,1,4)
     ax4.plot(Time, np.array(State[4])*180/np.pi)
     ax4.plot(Time2, np.array(State_ref[1])*180/np.pi)
     ax4.set_ylabel("Angle vel[deg/s]")
     ax4.set_xlabel("Time[s]")
     ax4.set_xlim(0, time_max)
     ax4.grid()
-    #plt.show()
+
     while True:
         if stop == True:
             break
-        #line.set_ydata(np.random.rand(100))
-        #fig.canvas.restore_region(bg)
-        #fig.canvas.blit(ax1.bbox)
-        fig.canvas.flush_events()
-        #pygame.display.update() #描画処理を実行
-        
+        fig.canvas.flush_events()        
         if pygame_flag == True:
-            pygame.display.update() #描画処理を実行
+            #pygame.display.update() #描画処理を実行
             for event in pygame.event.get():
                 if event.type == QUIT:  # 終了イベント
                     pygame.quit()  #pygameのウィンドウを閉じる
