@@ -62,16 +62,17 @@ def main2():
     fig.canvas.mpl_connect('close_event', on_close)
     ax = fig.add_subplot()
     bg = fig.canvas.copy_from_bbox(ax.bbox)
-    line, = ax.plot(np.linspace(0, 99, 100), np.zeros(100))
+    line, = ax.plot(np.linspace(0, 99, 100), np.random.rand(100))
     ax.set_ylim(0.0, 1.0)
-    for i in range(1000):
+    while True:
         if stop == True:
             break
-        line.set_ydata(np.random.rand(100))
-        fig.canvas.restore_region(bg)
+        #line.set_ydata(np.random.rand(100))
+        #fig.canvas.restore_region(bg)
         fig.canvas.blit(ax.bbox)
         fig.canvas.flush_events()
-        
+
+
 
 if __name__ == "__main__":
     main2() 

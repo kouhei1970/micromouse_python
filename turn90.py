@@ -155,7 +155,16 @@ def main():
     #print(ref_psi*180/np.pi)
     
     #pygame.quit()  #pygameのウィンドウを閉じる
+    draw_graph(Time, Time2, time_max, State, State_input, State_ref)
 
+stop = False
+def on_close(event):
+    global stop
+    stop = True
+    pass  # ここで終了イベントを受け取って渡す？
+
+def draw_graph(Time, Time2, time_max, State, State_input, State_ref):
+    '''
     plt.figure("State")
     min_y=[-100,-10,-1,-1,-5,-2.5,0,0]
     max_y=[10,100, 1, 1, 5, 1, 0.18, 0.18]
@@ -167,6 +176,7 @@ def main():
         plt.grid()
 
     '''
+    '''
     plt.plot(State[6], State[7])
     plt.xlim(0, 1.8)
     plt.ylim(0, 1.8)
@@ -176,37 +186,48 @@ def main():
     plt.show()
     '''
 
-    plt.figure("Control result")
-    plt.subplot(4,1,1)
+    plt.ion()
+    fig = plt.figure("Control result")
+    fig.canvas.mpl_connect('close_event', on_close)
+    ax1 = fig.add_subplot(4,1,1)
+    #plt.subplot(4,1,1)
     #plt.plot(Time, State[0])
-    plt.plot(Time2, State_input[0])
-    plt.grid()
-    plt.xlim(0, time_max)
-    plt.ylabel("Input(R)[V]")
-    plt.subplot(4,1,2)
+    ax1.plot(Time2, State_input[0])
+    ax1.grid()
+    bg1 = fig.canvas.copy_from_bbox(ax1.bbox)
+    ax1.set_xlim(0, time_max)
+    ax1.set_ylabel("Input(R)[V]")
+    ax2 = fig.add_subplot(4,1,2)
     #plt.plot(Time, State[1])
-    plt.plot(Time2, State_input[1])
-    plt.ylabel("Input(L)[V]")
-    plt.grid()
-    plt.xlim(0, time_max)
+    ax2.plot(Time2, State_input[1])
+    ax2.set_ylabel("Input(L)[V]")
+    ax2.grid()
+    ax2.set_xlim(0, time_max)
+    bg2 = fig.canvas.copy_from_bbox(ax2.bbox)
+    ax3 = fig.add_subplot(4,1,3)
+    ax3.plot(Time, np.array(State[5])*180/np.pi)
+    ax3.plot(Time2, np.array(State_ref[0])*180/np.pi)
+    ax3.set_yticks((0, 45, 90))
+    ax3.set_xlim(0, time_max)
+    ax3.set_ylabel("Angle[deg]")
+    ax3.grid()
+    ax4 = fig.add_subplot(4,1,4)
+    ax4.plot(Time, np.array(State[4])*180/np.pi)
+    ax4.plot(Time2, np.array(State_ref[1])*180/np.pi)
+    ax4.set_ylabel("Angle vel[deg/s]")
+    ax4.set_xlabel("Time[s]")
+    ax4.set_xlim(0, time_max)
+    ax4.grid()
     #plt.show()
-    plt.subplot(4,1,3)
-    plt.plot(Time, np.array(State[5])*180/np.pi)
-    plt.plot(Time2, np.array(State_ref[0])*180/np.pi)
-    plt.yticks((0, 45, 90))
-    plt.xlim(0, time_max)
-    plt.ylabel("Angle[deg]")
-    plt.grid()
+    while True:
+        print('hoge')
+        if stop == True:
+            break
+        #line.set_ydata(np.random.rand(100))
+        #fig.canvas.restore_region(bg)
+        #fig.canvas.blit(ax1.bbox)
+        fig.canvas.flush_events()
 
-    plt.subplot(4,1,4)
-    plt.plot(Time, np.array(State[4])*180/np.pi)
-    plt.plot(Time2, np.array(State_ref[1])*180/np.pi)
-    plt.ylabel("Angle vel[deg/s]")
-    plt.xlabel("Time[s]")
-    plt.xlim(0, time_max)
-
-    plt.grid()
-    plt.show()
 
 
 if __name__ == "__main__":
