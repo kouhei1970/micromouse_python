@@ -164,6 +164,7 @@ def on_close(event):
     pass  # ここで終了イベントを受け取って渡す？
 
 def draw_graph(Time, Time2, time_max, State, State_input, State_ref):
+    pygame_flag =True
     '''
     plt.figure("State")
     min_y=[-100,-10,-1,-1,-5,-2.5,0,0]
@@ -188,7 +189,7 @@ def draw_graph(Time, Time2, time_max, State, State_input, State_ref):
 
     plt.ion()
     fig = plt.figure("Control result")
-    fig.canvas.mpl_connect('close_event', on_close)
+    #fig.canvas.mpl_connect('close_event', on_close)
     ax1 = fig.add_subplot(4,1,1)
     #plt.subplot(4,1,1)
     #plt.plot(Time, State[0])
@@ -220,14 +221,22 @@ def draw_graph(Time, Time2, time_max, State, State_input, State_ref):
     ax4.grid()
     #plt.show()
     while True:
-        print('hoge')
         if stop == True:
             break
         #line.set_ydata(np.random.rand(100))
         #fig.canvas.restore_region(bg)
         #fig.canvas.blit(ax1.bbox)
         fig.canvas.flush_events()
-
+        #pygame.display.update() #描画処理を実行
+        '''
+        if pygame_flag == True:
+            pygame.display.update() #描画処理を実行
+            for event in pygame.event.get():
+                if event.type == QUIT:  # 終了イベント
+                    pygame.quit()  #pygameのウィンドウを閉じる
+                    pygame_flag = False
+                    #sys.exit() #システム終了
+        '''
 
 
 if __name__ == "__main__":
