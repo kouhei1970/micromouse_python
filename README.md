@@ -13,7 +13,9 @@ pip install PyQt5
 python turn90.py
 python turn90sigmoid.py
 python maze.py
+python sandbox.py
 ```
+`sandbox.py`が現在開発中でかつバグなく実行できる様になってるコードです。
 
 ## Ubuntu
 ```
