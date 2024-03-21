@@ -8,7 +8,7 @@ pip install pygame
 pip install PyQt5
 ```
 
-## Test
+## Demo
 ```
 python turn90.py
 python turn90sigmoid.py
