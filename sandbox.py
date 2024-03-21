@@ -15,8 +15,8 @@ def main():
     pygame.display.set_caption("Micromouse Simulator")    # タイトルを作成
     FPS = 24
 
-    mouse = Micromouse()
     maze = Maze(0)
+    mouse = Micromouse()
     mouse.ground_noise_on()
 
     while True:

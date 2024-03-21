@@ -5,8 +5,9 @@ from pygame.locals import *
 import pygame
 import sys
 
-class Micromouse():
-    def __init__(self):
+class Micromouse:
+    def __init__(self, maze=[]):
+        self.maze = maze
         #MicroMouse parameter (SI units)
         self.gravity = 9.81
         self.robot_mass   = 0.1
