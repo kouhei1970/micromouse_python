@@ -7,6 +7,7 @@ import sys
 
 class Micromouse:
     def __init__(self, maze=[]):
+        deg2rad = np.pi/180
         self.maze = maze
         #MicroMouse parameter (SI units)
         self.gravity = 9.81
@@ -35,6 +36,11 @@ class Micromouse:
         self.nrflag = False
         self.nlflag = False
         self.ground_noise_flag = 0.0
+        self.sensor_pos = [[0.03, 0.0375, 0.0],\
+                           [0.04, 0.01, 60*deg2rad],\
+                           [0.04,-0.01,-60*deg2rad],\
+                           [0.03,-0.0375, 0.0]\
+                          ] #LF LS RS RF [[x,y,angle],....]
 
         #for render
         self.maze_width = (180*16)/5
@@ -282,6 +288,92 @@ class Micromouse:
         self.state[7] = self.__rk4(self.__Ydot, self.time, self.steptime, Y, u, v, psi)
         self.time += self.steptime
         return self.time, self.state
+
+    def straight_demo(self, screen, FPS=24, flag=False):
+        while True:
+            time =0.0
+            self.time = time
+            drawtime = 0.0
+            controltime = 0.0
+            control_period = 1e-2
+            state=[0,0,0,0,0,np.pi/2,0.09,0.09]
+            self.state = state
+            ur = 0.0
+            ul = 0.0
+
+            while time<2.5 and 0.04<state[6]<0.14:
+                psi = self.state[5]
+                mx = self.state[6]
+                my = self.state[7]
+
+                if  state[7]<(180*14-50)/1000:
+                    ur = 2.0
+                    ul = 2.0
+                else:
+                    ur = 0.0
+                    ul = 0.0
+
+                if flag:
+                    if time>=controltime:
+                        controltime += control_period
+                        sensor_ray=[]
+                        for sensor in self.sensor_pos:
+                            sensor_pos_x = sensor[0]*1000
+                            sensor_pos_y = sensor[1]*1000
+                            sensor_pos_angle = sensor[2]
+                            pos = np.array([[sensor_pos_x],[sensor_pos_y]])
+                            rmat = np.array([[np.cos(psi),-np.sin(psi)],[np.sin(psi), np.cos(psi)]])
+                            pos = rmat.dot(pos)
+                            robot_pos = np.array([[mx*1000],[my*1000]])
+                            pos = pos + robot_pos
+                            angle = sensor_pos_angle + psi
+                            #print(pos)
+                            #print(angle)
+                            rayvect = np.array([[np.cos(angle)],[np.sin(angle)]])
+                            rayvect = rayvect/np.linalg.norm(rayvect)
+                            min_range = 10000.0
+                            min_p =[]
+                            for index in range(33*33):
+                                t, p, rflag = self.maze.raycast(pos, rayvect, index)
+                                if rflag:
+                                    if min_range>t:
+                                        min_range = t
+                                        min_p = p
+                            pos = pos/5
+                            pos[0] = pos[0] + (self.window_width - self.maze_width)/2
+                            pos[1] = 640 - pos[1] - (self.window_height - self.maze_height)/2
+                            min_p = min_p/5
+                            min_p[0] = min_p[0] + (self.window_width - self.maze_width)/2
+                            min_p[1] = 640 - min_p[1] - (self.window_height - self.maze_height)/2
+                            #pygame.draw.line(screen, (255, 255, 0), pos[:,0], min_p, 2)
+                            #print(pos)
+                            #print(min_p)
+                            sensor_ray.append([pos[:,0], min_p])
+                        #print(time)
+
+
+                #print(sensor_ray)
+                time, state= self.step(time, ur, ul)
+                #print(time, state[6], state[7], ur, ul)
+
+                if time >= drawtime:
+                    drawtime += 1/FPS
+                    self.maze.draw_map(screen)
+                    if flag:
+                        for single_sensor_ray in sensor_ray:
+                            p1 = single_sensor_ray[0]
+                            p2 = single_sensor_ray[1]
+                            #print(p1)
+                            #print(p2)
+                            pygame.draw.line(screen, (255, 255, 0), p1, p2, 2)
+                    self.draw_robot(screen)
+                    pygame.display.update() #描画処理を実行
+
+                for event in pygame.event.get():
+                    if event.type == QUIT:  # 終了イベント
+                        pygame.quit()  #pygameのウィンドウを閉じる
+                        #sys.exit() #システム終了
+                        return
 
     def draw_robot(self, screen):
         #Draw robot
