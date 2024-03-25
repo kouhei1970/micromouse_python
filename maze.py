@@ -15,6 +15,10 @@ def normal_vector(v1,v2):
         normal_y = normal_y / norm
         return normal_x, normal_y
 
+class Cell():
+    def __init__(self):
+        self.cell = []
+
 class Wall():
     def __init__(self, x ,y, angle):
         #オリジナルは横置き
@@ -74,6 +78,8 @@ class Maze():
 
         self.read_map(n)
         self.map = []
+        self.map2 = []
+        self.map_newtype = []
         self.make_map()
 
     def read_map(self, x):
@@ -223,7 +229,28 @@ class Maze():
                     self.map.append([])
                 x += 1
             y += 1
-
+        
+        newmap = []
+        for mapraw in self.smap:
+            mapraw = mapraw+"  "
+            newmap.append(mapraw)
+        for ycell in range(16+1):
+            for xcell in range(16+1):
+                cell = []
+                if newmap[32-2*ycell][4*xcell]=='+':
+                    col = Colmun(xcell*180, ycell*180, 0.0)
+                    cell.append(col)
+                if newmap[32-2*ycell][4*xcell+2]=='-':
+                    wall1 = Wall(xcell*180+90, ycell*180, 0.0)
+                    cell.append(wall1)
+                else:
+                    cell.append([])
+                if self.smap[32-2*ycell-1][4*xcell]=='|':
+                    wall2 = Wall(xcell*180, ycell*180+90, np.pi/2)
+                    cell.append(wall2)
+                else:
+                    cell.append([])
+                self.map2.append(cell)
 
     def printmap(self):
         for i in range(33):
@@ -283,6 +310,21 @@ class Maze():
                     pygame.draw.polygon(screen, (200,0,0),vertex)
                     #screen.fill((200,0,0), (x, y, width, height))
 
+    def draw_map2(self, screen):
+            screen.fill((0,0,0)) # 背景を黒で塗りつぶす
+            for ycell in range(17):
+                for xcell in range(17):
+                    cell = self.map2[ycell*17 + xcell]
+                    for obj in cell:
+                        if obj !=[]:
+                            vertex = obj.vertex
+                            vertex = vertex/5
+                            vertex[0] = vertex[0] + (self.window_width - self.maze_width)/2
+                            vertex[1] = 640 - vertex[1] - (self.window_height - self.maze_height)/2
+                            vertex = vertex.T
+                            vertex = vertex.tolist()
+                            pygame.draw.polygon(screen, (200,0,0),vertex)
+
 
     def demo(self):
         pygame.init()    # Pygameを初期化
@@ -306,7 +348,7 @@ class Maze():
         my = 0
         mangle = 0
         while True:
-            self.draw_map(screen)
+            self.draw_map2(screen)
             
             #Draw robot
             zoom=0.3
@@ -346,8 +388,8 @@ class Maze():
                     pygame.quit()  #pygameのウィンドウを閉じる
                     #sys.exit() #システム終了
                     return
-            rx = int(np.random.random(1)*16)
-            ry = int(np.random.random(1)*16)
+            rx = int(np.random.random(1)[0]*16)
+            ry = int(np.random.random(1)[0]*16)
             #mx = int(np.random.random(1)*16)
             #my = int(np.random.random(1)*16)
             mangle += 15
@@ -364,6 +406,43 @@ class Maze():
         #End of Loop
         #pygame.quit()  #pygameのウィンドウを閉じる
         #print(ref_psi*180/np.pi)
+
+    def draw_map_demo(self):
+        pygame.init()    # Pygameを初期化
+        clock = pygame.time.Clock()
+        screen = pygame.display.set_mode((640, 640))    # 画面を作成
+        pygame.display.set_caption("Micromouse Simulation")    # タイトルを作成
+        img0 = pygame.image.load("micromouse.png").convert()
+        robot_width = 80
+        robot_length = 100
+
+        FPS = 30
+        running = True
+        time = 0.0
+        render_step = 1/FPS
+        white= (255,255,255)
+        black = (0,0,0)
+        #Rendering
+        rx=0
+        ry=0
+        mx = 0
+        my = 0
+        mangle = 0
+        while True:
+            self.draw_map2(screen)
+            pygame.display.update() #描画処理を実行
+            clock.tick(FPS)
+
+            for event in pygame.event.get():
+                if event.type == QUIT:  # 終了イベント
+                    pygame.quit()  #pygameのウィンドウを閉じる
+                    #sys.exit() #システム終了
+                    return
+        #End of Loop
+        #pygame.quit()  #pygameのウィンドウを閉じる
+        #print(ref_psi*180/np.pi)
+
+
 
 def main():
     maze = Maze(2)
